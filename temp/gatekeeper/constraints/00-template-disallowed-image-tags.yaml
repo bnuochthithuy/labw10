@@ -1,0 +1,58 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8sdisallowedimagetags
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sDisallowedImageTags
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            tags:
+              type: array
+              items:
+                type: string
+  targets:
+  - target: admission.k8s.gatekeeper.sh
+    rego: |
+      package k8sdisallowedimagetags
+
+      violation[{"msg": msg}] {
+        container := containers[_]
+        tag := input.parameters.tags[_]
+        endswith(container.image, sprintf(":%s", [tag]))
+        msg := sprintf("container <%s> uses disallowed image tag <%s>", [container.name, tag])
+      }
+
+      containers[c] {
+        spec := pod_spec(input.review.object)
+        c := spec.containers[_]
+      }
+
+      containers[c] {
+        spec := pod_spec(input.review.object)
+        c := spec.initContainers[_]
+      }
+
+      containers[c] {
+        spec := pod_spec(input.review.object)
+        c := spec.ephemeralContainers[_]
+      }
+
+      pod_spec(obj) = spec {
+        obj.kind == "Pod"
+        spec := obj.spec
+      }
+
+      pod_spec(obj) = spec {
+        spec := obj.spec.template.spec
+      }
+
+      pod_spec(obj) = spec {
+        spec := obj.spec.jobTemplate.spec.template.spec
+      }

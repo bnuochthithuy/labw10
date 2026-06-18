@@ -1,0 +1,53 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8srequiredresourcelimits
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sRequiredResourceLimits
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            resources:
+              type: array
+              items:
+                type: string
+  targets:
+  - target: admission.k8s.gatekeeper.sh
+    rego: |
+      package k8srequiredresourcelimits
+
+      violation[{"msg": msg}] {
+        container := containers[_]
+        resource := input.parameters.resources[_]
+        not container.resources.limits[resource]
+        msg := sprintf("container <%s> is missing resources.limits.%s", [container.name, resource])
+      }
+
+      containers[c] {
+        spec := pod_spec(input.review.object)
+        c := spec.containers[_]
+      }
+
+      containers[c] {
+        spec := pod_spec(input.review.object)
+        c := spec.initContainers[_]
+      }
+
+      pod_spec(obj) = spec {
+        obj.kind == "Pod"
+        spec := obj.spec
+      }
+
+      pod_spec(obj) = spec {
+        spec := obj.spec.template.spec
+      }
+
+      pod_spec(obj) = spec {
+        spec := obj.spec.jobTemplate.spec.template.spec
+      }

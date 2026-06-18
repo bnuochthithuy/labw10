@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: reject-missing-limits
+  namespace: demo
+spec:
+  securityContext:
+    runAsUser: 1000
+  containers:
+  - name: app
+    image: nginx:1.27.4

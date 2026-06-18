@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pass-valid-replicas
+  namespace: demo
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: pass-valid-replicas
+  template:
+    metadata:
+      labels:
+        app: pass-valid-replicas
+    spec:
+      securityContext:
+        runAsUser: 1000
+      containers:
+      - name: app
+        image: nginx:1.27.4
+        resources:
+          limits:
+            cpu: 100m
+            memory: 64Mi

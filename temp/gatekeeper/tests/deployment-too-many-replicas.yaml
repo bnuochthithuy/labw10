@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reject-too-many-replicas
+  namespace: demo
+spec:
+  replicas: 6
+  selector:
+    matchLabels:
+      app: reject-too-many-replicas
+  template:
+    metadata:
+      labels:
+        app: reject-too-many-replicas
+    spec:
+      securityContext:
+        runAsUser: 1000
+      containers:
+      - name: app
+        image: nginx:1.27.4
+        resources:
+          limits:
+            cpu: 100m
+            memory: 64Mi

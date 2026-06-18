@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: reject-latest
+  namespace: demo
+spec:
+  securityContext:
+    runAsUser: 1000
+  containers:
+  - name: app
+    image: nginx:latest
+    resources:
+      limits:
+        cpu: 100m
+        memory: 64Mi

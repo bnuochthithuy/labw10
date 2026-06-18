@@ -1,0 +1,54 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8sdisallowrunasroot
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sDisallowRunAsRoot
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties: {}
+  targets:
+  - target: admission.k8s.gatekeeper.sh
+    rego: |
+      package k8sdisallowrunasroot
+
+      violation[{"msg": msg}] {
+        spec := pod_spec(input.review.object)
+        spec.securityContext.runAsUser == 0
+        msg := "pod securityContext.runAsUser must not be 0"
+      }
+
+      violation[{"msg": msg}] {
+        container := containers[_]
+        container.securityContext.runAsUser == 0
+        msg := sprintf("container <%s> securityContext.runAsUser must not be 0", [container.name])
+      }
+
+      containers[c] {
+        spec := pod_spec(input.review.object)
+        c := spec.containers[_]
+      }
+
+      containers[c] {
+        spec := pod_spec(input.review.object)
+        c := spec.initContainers[_]
+      }
+
+      pod_spec(obj) = spec {
+        obj.kind == "Pod"
+        spec := obj.spec
+      }
+
+      pod_spec(obj) = spec {
+        spec := obj.spec.template.spec
+      }
+
+      pod_spec(obj) = spec {
+        spec := obj.spec.jobTemplate.spec.template.spec
+      }
