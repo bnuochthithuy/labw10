@@ -5,46 +5,61 @@ metadata:
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "-2"
-
 spec:
   project: default
-
   source:
     repoURL: https://open-policy-agent.github.io/gatekeeper/charts
     chart: gatekeeper
     targetRevision: 3.18.2
-
   destination:
     server: https://kubernetes.default.svc
     namespace: gatekeeper-system
-
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
-      - CreateNamespace=true
-      - ServerSideApply=true
-
+    - CreateNamespace=true
+    - ServerSideApply=true
+    - RespectIgnoreDifferences=true
   ignoreDifferences:
-
-  # Webhook certs thay đổi liên tục
-  - group: admissionregistration.k8s.io
-    kind: ValidatingWebhookConfiguration
-    jsonPointers:
-      - /webhooks/0/clientConfig/caBundle
-      - /webhooks/1/clientConfig/caBundle
-      - /webhooks/2/clientConfig/caBundle
-
-  - group: admissionregistration.k8s.io
-    kind: MutatingWebhookConfiguration
-    jsonPointers:
-      - /webhooks/0/clientConfig/caBundle
-
-  # CRD tự thay đổi sau khi cài
   - group: apiextensions.k8s.io
     kind: CustomResourceDefinition
     jsonPointers:
-      - /status
-      - /spec/conversion
-      - /metadata/annotations
+    - /status
+    - /spec/conversion
+    - /spec/preserveUnknownFields
+  - group: admissionregistration.k8s.io
+    kind: ValidatingWebhookConfiguration
+    jsonPointers:
+    - /webhooks/0/clientConfig/caBundle
+    - /webhooks/1/clientConfig/caBundle
+    - /webhooks/2/clientConfig/caBundle
+  - group: admissionregistration.k8s.io
+    kind: MutatingWebhookConfiguration
+    jsonPointers:
+    - /webhooks/0/clientConfig/caBundle
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gatekeeper-policies
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/bnuochthithuy/labw10.git
+    path: temp/gatekeeper/constraints
+    targetRevision: main
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: gatekeeper-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - SkipDryRunOnMissingResource=true
+    - ServerSideApply=true
