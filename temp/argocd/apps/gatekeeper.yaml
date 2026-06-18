@@ -56,3 +56,10 @@ spec:
     syncOptions:
     - SkipDryRunOnMissingResource=true
     - ServerSideApply=true
+ignoreDifferences:
+    - group: apiextensions.k8s.io
+      kind: CustomResourceDefinition
+      jsonPointers:
+        - /status
+        - /spec/conversion
+        - /spec/preserveUnknownFields
