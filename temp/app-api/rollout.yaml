@@ -33,6 +33,12 @@ spec:
           value: "v0.0.1"
         - name: ERROR_RATE
           value: "0"
+        - name: DB_PASSWORD_FILE
+          value: /var/run/secrets/db/password
+        volumeMounts:
+        - name: db-credentials
+          mountPath: /var/run/secrets/db
+          readOnly: true
         livenessProbe:
           httpGet:
             path: /healthz
@@ -47,6 +53,10 @@ spec:
           limits:
             cpu: 200m
             memory: 128Mi
+      volumes:
+      - name: db-credentials
+        secret:
+          secretName: api-db-credentials
   strategy:
     canary:
       analysis:
