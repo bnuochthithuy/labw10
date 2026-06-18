@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: unsigned-nginx
+  namespace: demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: unsigned-nginx
+  template:
+    metadata:
+      labels:
+        app: unsigned-nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.27
+        ports:
+        - containerPort: 80

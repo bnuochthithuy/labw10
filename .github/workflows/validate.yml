@@ -11,6 +11,8 @@ on:
       - 'temp/argocd/**'
       - 'temp/rbac/**'
       - 'temp/gatekeeper/**'
+      - 'temp/policies/**'
+      - 'temp/policy-tests/**'
       - '.github/workflows/validate.yml'
 
 jobs:
@@ -29,4 +31,4 @@ jobs:
         run: |
           kubeconform -strict -summary -ignore-missing-schemas \
             temp/app-api/ temp/app-analysis/ temp/app-alert/ temp/app-common/ \
-            temp/argocd/ temp/rbac/ temp/gatekeeper/
+            temp/argocd/ temp/rbac/ temp/gatekeeper/ temp/policies/ temp/policy-tests/

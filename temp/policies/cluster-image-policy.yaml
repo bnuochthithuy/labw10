@@ -1,0 +1,15 @@
+apiVersion: policy.sigstore.dev/v1beta1
+kind: ClusterImagePolicy
+metadata:
+  name: require-signed-images
+spec:
+  images:
+  - glob: "**"
+  authorities:
+  - key:
+      hashAlgorithm: sha256
+      data: |
+        -----BEGIN PUBLIC KEY-----
+        REPLACE_WITH_COSIGN_PUBLIC_KEY
+        -----END PUBLIC KEY-----
+  mode: enforce
