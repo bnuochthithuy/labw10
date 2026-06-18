@@ -8,8 +8,8 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/bnuochthithuy/temp.git
-    path: argocd/apps
+    repoURL: https://github.com/bnuochthithuy/labw10.git
+    path: temp/argocd/apps
     targetRevision: main
   destination:
     server: https://kubernetes.default.svc

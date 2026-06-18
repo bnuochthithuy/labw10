@@ -9,8 +9,8 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/bnuochthithuy/temp.git
-    path: app-api
+    repoURL: https://github.com/bnuochthithuy/labw10.git
+    path: temp/app-api
     targetRevision: main
   destination:
     server: https://kubernetes.default.svc

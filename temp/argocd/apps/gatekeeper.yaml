@@ -43,8 +43,8 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/bnuochthithuy/temp.git
-    path: gatekeeper/constraints
+    repoURL: https://github.com/bnuochthithuy/labw10.git
+    path: temp/gatekeeper/constraints
     targetRevision: main
   destination:
     server: https://kubernetes.default.svc
