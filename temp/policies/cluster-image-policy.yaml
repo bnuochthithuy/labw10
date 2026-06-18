@@ -10,6 +10,7 @@ spec:
       hashAlgorithm: sha256
       data: |
         -----BEGIN PUBLIC KEY-----
-        REPLACE_WITH_COSIGN_PUBLIC_KEY
+        MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEH7faSZ4OtbF6Gxz83rHFq58Buzoj
+        uQyp2CZB0Z7twurhNRojCNOYO+Rc17kmGPyeRBvVulo0QRhsEZSF8VDveg==
         -----END PUBLIC KEY-----
   mode: enforce
