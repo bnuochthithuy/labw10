@@ -19,9 +19,11 @@ spec:
       labels:
         app: api
     spec:
+      securityContext:
+        runAsUser: 1000
       containers:
       - name: api
-        image: ghcr.io/Vuong-Bach/w10-api:0.0.1
+        image: ghcr.io/bnuochthithuy/w10-api:0.0.1
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
