@@ -6,7 +6,8 @@ spec:
   images:
   - glob: "**"
   authorities:
-  - key:
+  - name: authority-0
+    key:
       hashAlgorithm: sha256
       data: |
         -----BEGIN PUBLIC KEY-----
